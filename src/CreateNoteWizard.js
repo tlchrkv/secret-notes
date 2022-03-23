@@ -39,7 +39,7 @@ const theme = createTheme({
 
 export default function CreateNoteWizard() {
   const [state, setState] = useState(initialState);
-
+  const [password, setPassword] = useState('');
   const [activeStep, setActiveStep] = useState(0);
 
   const handleBack = () => {
@@ -56,28 +56,24 @@ export default function CreateNoteWizard() {
   const lastPassword = useRef('');
 
   useEffect(() => {
-    const callCheckPasswordStrength = () => {
-      checkPasswordStrength(state.password).then(response => {
+    if (password.length >= 6 && lastPassword.current !== password) {
+      checkPasswordStrength(password).then(response => {
         setState({
           ...state,
           isPasswordStrengthAcceptable: response.is_acceptable,
           passwordStrengthMessage: response.strength_level.charAt(0).toUpperCase() + response.strength_level.slice(1) + ' password',
         });
 
-        lastPassword.current = state.password;
+        lastPassword.current = password;
       });
-    };
-
-    if (state.password.length >= 6 && lastPassword.current !== state.password) {
-      callCheckPasswordStrength();
     }
-  }, [state]);
+  }, [state, password]);
 
   const handlePasswordChange = (e) => {
     if (e.target.value.length === 0) {
+      setPassword(e.target.value);
       setState({
         ...state,
-        password: e.target.value,
         isPasswordStrengthAcceptable: false,
         passwordStrengthMessage: 'Password is required',
       });
@@ -85,16 +81,16 @@ export default function CreateNoteWizard() {
     }
 
     if (e.target.value.length < 6) {
+      setPassword(e.target.value);
       setState({
         ...state,
-        password: e.target.value,
         isPasswordStrengthAcceptable: false,
         passwordStrengthMessage: 'Weak password',
       });
       return;
     }
 
-    setState({ ...state, password: e.target.value });
+    setPassword(e.target.value);
   };
 
   const enableAutoDeleteStrategy = (code) => {
@@ -116,7 +112,7 @@ export default function CreateNoteWizard() {
     setActiveStep(newActiveStep);
 
     if (newActiveStep === 2 && state.isEncryptionEnabled) {
-      encryptText(state.content, state.password).then(response => {
+      encryptText(state.content, password).then(response => {
         setState({
           ...state,
           cipher: response.cipher,
@@ -160,10 +156,10 @@ export default function CreateNoteWizard() {
       return;
     }
 
+    setPassword('');
     setState({
       ...state,
       isEncryptionEnabled: false,
-      password: '',
       passwordStrengthMessage: 'Password is required',
       isPasswordStrengthAcceptable: null,
     });
@@ -250,7 +246,7 @@ export default function CreateNoteWizard() {
             label="Password"
             sx={{marginBottom: '2rem'}}
             onChange={handlePasswordChange}
-            value={state.password}
+            value={password}
             color="secondary"
             disabled={!state.isEncryptionEnabled}
             error={state.isPasswordStrengthAcceptable !== null ? !state.isPasswordStrengthAcceptable : false}
