@@ -1,0 +1,74 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+use Phalcon\Di\FactoryDefault\Cli;
+use Phalcon\Cli\Console;
+use Phalcon\Cli\Dispatcher;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$diContainer = new Cli();
+
+// Database
+$databaseConfig = include __DIR__ . '/../config/database.php';
+$diContainer->set('db', function () use ($databaseConfig) {
+    $adapter = 'Phalcon\Db\Adapter\Pdo\\' . $databaseConfig['adapter'];
+    return new $adapter([
+        'host' => $databaseConfig['host'],
+        'username' => $databaseConfig['username'],
+        'password' => $databaseConfig['password'],
+        'dbname' => $databaseConfig['dbname'],
+    ]);
+});
+
+$arguments = [];
+
+foreach ($argv as $k => $arg) {
+    if ($k === 1) {
+        $arguments['task'] = $arg;
+    } elseif ($k === 2) {
+        $arguments['action'] = $arg;
+    } elseif ($k >= 3) {
+        $arguments['params'][] = $arg;
+    }
+}
+
+$tasks = include __DIR__ . '/../config/tasks.php';
+
+if (!isset($arguments['task'])) {
+    fwrite(STDERR, 'Available tasks:' . PHP_EOL);
+    foreach ($tasks as $name => $config) {
+        fwrite(STDERR, $name . ' - ' . $config['desc'] . PHP_EOL);
+    }
+    exit(0);
+}
+
+if (!isset($tasks[$arguments['task']])) {
+    fwrite(STDERR, 'Task doesn\'t exist' . PHP_EOL);
+    exit(1);
+}
+
+$task = $tasks[$arguments['task']];
+$diContainer->set('dispatcher', function () use ($task) {
+    $dispatcher = new Dispatcher();
+    $dispatcher->setDefaultNamespace($task['namespace']);
+    return $dispatcher;
+});
+
+$console = new Console($diContainer);
+
+try {
+    $console->handle(['task' => $task['slug'], 'action' => $task['action'], 'params' => $arguments['params'] ?? null]);
+} catch (\Phalcon\Exception $e) {
+    fwrite(STDERR, $e->getMessage() . PHP_EOL);
+    exit(1);
+} catch (\Throwable $throwable) {
+    fwrite(STDERR, $throwable->getMessage() . PHP_EOL);
+    exit(1);
+}

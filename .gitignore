@@ -1,0 +1,7 @@
+vendor
+node_modules
+public/assets
+storage/postgres-data
+.env
+docker-compose.yml
+dist

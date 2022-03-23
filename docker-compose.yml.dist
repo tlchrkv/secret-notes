@@ -1,0 +1,63 @@
+version: '3.4'
+
+x-template: &php
+  build:
+    context: .
+    dockerfile: build/php/Dockerfile
+  networks:
+    - secret_notes
+  depends_on:
+    - postgres
+  volumes:
+    - .:/opt/app:delegated
+  env_file:
+    - .env
+
+services:
+  nginx:
+    image: nginx:1.21-alpine
+    container_name: sn_nginx
+    restart: unless-stopped
+    networks:
+      - secret_notes
+    depends_on:
+      - backend
+    volumes:
+      - ./:/opt/app
+      - ./build/nginx/config:/etc/nginx/conf.d
+    ports:
+      - "3118:80"
+      - "3119:81"
+
+  postgres:
+    image: postgres:12
+    container_name: sn_postgres
+    restart: unless-stopped
+    networks:
+      - secret_notes
+    volumes:
+      - ./storage/postgres-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  backend:
+    <<: *php
+    container_name: sn_backend
+
+  frontend:
+    build:
+      context: .
+      dockerfile: build/frontend/Dockerfile
+    container_name: sn_frontend
+    volumes:
+      - .:/opt/app
+    networks:
+      - secret_notes
+    env_file:
+      - .env
+
+networks:
+  secret_notes:
+    driver: "bridge"
+    driver_opts:
+      com.docker.network.driver.mtu: 1400
