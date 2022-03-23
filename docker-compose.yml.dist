@@ -44,6 +44,11 @@ services:
     <<: *php
     container_name: sn_backend
 
+  delete_overdue_notes:
+    <<: *php
+    container_name: sn_delete_overdue_notes
+    command: bash -c "while true; do ./bin/console delete-overdue-notes; sleep 10; done"
+
   frontend:
     build:
       context: .
