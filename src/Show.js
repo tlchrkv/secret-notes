@@ -62,7 +62,17 @@ export default function Show() {
 
   return <ThemeProvider theme={theme}>
     <CssBaseline />
-    {isNotFound ? <PageNotFound /> : <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+    {isNotFound ? <PageNotFound /> : <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        minWidth: '460px',
+        minHeight: '540px',
+    }}
+    >
       <Typography sx={{marginBottom: '2rem'}}>
         {note.content || (note.cipher && atob(note.cipher))}
       </Typography>

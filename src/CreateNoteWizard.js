@@ -210,11 +210,12 @@ export default function CreateNoteWizard() {
       alignItems="center"
       sx={{
         height: '100vh',
+        minHeight: '540px',
         paddingTop: '4rem',
         paddingBottom: '4rem',
       }}
     >
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{minWidth: '460px'}}>
         <Stepper activeStep={activeStep} sx={{marginBottom: '3rem'}}>
           {steps.map((label, index) => {
             return (
@@ -226,7 +227,7 @@ export default function CreateNoteWizard() {
         </Stepper>
       </Container>
 
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{minWidth: '460px'}}>
         {activeStep === 0 && <TextField
           label="Content"
           multiline
@@ -238,7 +239,7 @@ export default function CreateNoteWizard() {
           helperText="Maximum number of characters 600"
         />}
 
-        {activeStep === 1 && <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        {activeStep === 1 && <Box sx={{display: 'flex', flexDirection: 'column', minWidth: '460px'}}>
           <FormControlLabel
             control={<Switch checked={state.isEncryptionEnabled} color="secondary" onChange={handleEncryptionCheckboxChange} />}
             label="Enable"
@@ -258,7 +259,7 @@ export default function CreateNoteWizard() {
           />
         </Box>}
 
-        {activeStep === 2 && <Fragment>
+        {activeStep === 2 && <Box sx={{minWidth: '460px'}}>
           <FormControl sx={{marginBottom: '2rem'}}>
             <FormLabel id="auto-delete-strategy" color="secondary">When to delete a note?</FormLabel>
             <RadioGroup
@@ -283,14 +284,14 @@ export default function CreateNoteWizard() {
             <Slider value={state.storageTimeInDays} min={1} max={30} step={1} onChange={handleStorageTimeChange} color="secondary" />
             <Typography gutterBottom>{state.storageTimeInDays} {state.storageTimeInDays === 1 ? 'day' : 'days'}</Typography>
           </Box>}
-        </Fragment>}
+        </Box>}
 
         {activeStep === 3 && <Box sx={{display: 'flex', justifyContent: 'center', width: '100%'}}>
-          {process.env.REACT_APP_URL + '/' + state.code}
+          {state.code !== null && process.env.REACT_APP_URL + '/' + state.code}
         </Box>}
       </Container>
 
-      <Container maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Container maxWidth="sm" sx={{display: 'flex', justifyContent: 'center', minWidth: '460px'}}>
         {activeStep < steps.length ? <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
           <Button
             variant="text"

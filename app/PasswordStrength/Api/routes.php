@@ -7,7 +7,7 @@ return [
         'pattern' => '/api/v1/check-password-strength',
         'paths' => [
             'namespace' => 'App\PasswordStrength\Api\V1',
-            'controller' => 'PasswordStrength',
+            'controller' => 'password_strength',
             'action' => 'check',
         ],
         'httpMethods' => ['GET'],

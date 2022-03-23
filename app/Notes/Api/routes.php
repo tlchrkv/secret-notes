@@ -7,7 +7,7 @@ return [
         'pattern' => '/api/v1/notes',
         'paths' => [
             'namespace' => 'App\Notes\Api\V1',
-            'controller' => 'Note',
+            'controller' => 'note',
             'action' => 'add',
         ],
         'httpMethods' => ['POST'],
@@ -16,7 +16,7 @@ return [
         'pattern' => '/api/v1/encrypted-notes',
         'paths' => [
             'namespace' => 'App\Notes\Api\V1',
-            'controller' => 'Note',
+            'controller' => 'note',
             'action' => 'addEncrypted',
         ],
         'httpMethods' => ['POST'],
@@ -25,7 +25,7 @@ return [
         'pattern' => '/api/v1/notes/{code}/auto-delete/on-views-limit-reached',
         'paths' => [
             'namespace' => 'App\Notes\Api\V1',
-            'controller' => 'Note',
+            'controller' => 'note',
             'action' => 'enableAutoDeleteOnViewsLimitReached',
         ],
         'httpMethods' => ['POST'],
@@ -34,7 +34,7 @@ return [
         'pattern' => '/api/v1/notes/{code}/auto-delete/on-storage-time-expired',
         'paths' => [
             'namespace' => 'App\Notes\Api\V1',
-            'controller' => 'Note',
+            'controller' => 'note',
             'action' => 'enableAutoDeleteOnStorageTimeExpired',
         ],
         'httpMethods' => ['POST'],
@@ -43,7 +43,7 @@ return [
         'pattern' => '/api/v1/notes/{code}',
         'paths' => [
             'namespace' => 'App\Notes\Api\V1',
-            'controller' => 'Note',
+            'controller' => 'note',
             'action' => 'getByCode',
         ],
         'httpMethods' => ['GET'],

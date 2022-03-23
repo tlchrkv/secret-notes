@@ -7,7 +7,7 @@ return [
         'pattern' => '/api/v1/encrypt-text',
         'paths' => [
             'namespace' => 'App\TextEncryption\Api\V1',
-            'controller' => 'TextEncryption',
+            'controller' => 'text_encryption',
             'action' => 'encrypt',
         ],
         'httpMethods' => ['GET'],
@@ -16,7 +16,7 @@ return [
         'pattern' => '/api/v1/decrypt-text',
         'paths' => [
             'namespace' => 'App\TextEncryption\Api\V1',
-            'controller' => 'TextEncryption',
+            'controller' => 'text_encryption',
             'action' => 'decrypt',
         ],
         'httpMethods' => ['GET'],
